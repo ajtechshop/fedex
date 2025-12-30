@@ -1,7 +1,7 @@
 /**
  * Design: Swiss Modernism meets Digital Utility
  * Asymmetric two-column layout: sidebar (shipment list) + main panel (form)
- * Keyboard-first interaction with Tab navigation and Enter to submit
+ * Simplified for internal use with only essential fields
  */
 
 import { useState } from "react";
@@ -22,8 +22,7 @@ export default function Home() {
   const [editingId, setEditingId] = useState<string | null>(null);
   
   const [formData, setFormData] = useState<ShipmentFormData>({
-    company: "",
-    attention: "",
+    name: "",
     street1: "",
     street2: "",
     city: "",
@@ -34,8 +33,7 @@ export default function Home() {
     width: "",
     height: "",
     weight: "",
-    reference1: "",
-    reference2: "",
+    reference: "",
     residential: false,
   });
 
@@ -45,7 +43,7 @@ export default function Home() {
 
   const validateForm = (): boolean => {
     const required = [
-      "company", "attention", "street1", "city", "state", 
+      "name", "street1", "city", "state", 
       "zipcode", "phone", "length", "width", "height", "weight"
     ];
     
@@ -82,8 +80,7 @@ export default function Home() {
     
     const newShipment: Shipment = {
       id: editingId || nanoid(),
-      company: formData.company,
-      attention: formData.attention,
+      name: formData.name,
       street1: formData.street1,
       street2: formData.street2 || undefined,
       city: formData.city,
@@ -94,8 +91,7 @@ export default function Home() {
       width: Math.ceil(parseFloat(formData.width)),
       height: Math.ceil(parseFloat(formData.height)),
       weight: parseFloat(formData.weight),
-      reference1: formData.reference1 || undefined,
-      reference2: formData.reference2 || undefined,
+      reference: formData.reference,
       residential: formData.residential,
     };
     
@@ -110,8 +106,7 @@ export default function Home() {
     
     // Reset form
     setFormData({
-      company: "",
-      attention: "",
+      name: "",
       street1: "",
       street2: "",
       city: "",
@@ -122,16 +117,14 @@ export default function Home() {
       width: "",
       height: "",
       weight: "",
-      reference1: "",
-      reference2: "",
+      reference: "",
       residential: false,
     });
   };
 
   const handleEdit = (shipment: Shipment) => {
     setFormData({
-      company: shipment.company,
-      attention: shipment.attention,
+      name: shipment.name,
       street1: shipment.street1,
       street2: shipment.street2 || "",
       city: shipment.city,
@@ -142,8 +135,7 @@ export default function Home() {
       width: shipment.width.toString(),
       height: shipment.height.toString(),
       weight: shipment.weight.toString(),
-      reference1: shipment.reference1 || "",
-      reference2: shipment.reference2 || "",
+      reference: shipment.reference,
       residential: shipment.residential,
     });
     setEditingId(shipment.id);
@@ -191,7 +183,7 @@ export default function Home() {
             </div>
             <div>
               <h1 className="text-3xl font-bold text-foreground">FedEx Shipment CSV Generator</h1>
-              <p className="text-sm text-muted-foreground mt-1">Create FedEx-compatible import files for batch shipping</p>
+              <p className="text-sm text-muted-foreground mt-1">Quick shipment entry for internal batch processing</p>
             </div>
           </div>
         </div>
@@ -259,36 +251,24 @@ export default function Home() {
           <main className="lg:col-span-8">
             <Card className="p-6">
               <h2 className="text-xl font-semibold text-foreground mb-6">
-                {editingId ? "Edit Parcel Details" : "Add New Parcel"}
+                {editingId ? "Edit Parcel" : "Add New Parcel"}
               </h2>
               
               <form onSubmit={handleAddShipment} className="space-y-6">
                 {/* Recipient Information */}
                 <div className="space-y-4">
                   <h3 className="text-sm font-semibold text-foreground uppercase tracking-wide">
-                    Recipient Information
+                    Recipient
                   </h3>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="company">Company Name *</Label>
-                      <Input
-                        id="company"
-                        value={formData.company}
-                        onChange={(e) => handleInputChange("company", e.target.value)}
-                        placeholder="Acme Corp"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="attention">Attention *</Label>
-                      <Input
-                        id="attention"
-                        value={formData.attention}
-                        onChange={(e) => handleInputChange("attention", e.target.value)}
-                        placeholder="John Doe"
-                      />
-                    </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Recipient Name *</Label>
+                    <Input
+                      id="name"
+                      value={formData.name}
+                      onChange={(e) => handleInputChange("name", e.target.value)}
+                      placeholder="John Doe"
+                    />
                   </div>
                   
                   <div className="space-y-2">
@@ -364,9 +344,7 @@ export default function Home() {
                   
                   <div className="grid grid-cols-3 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="length" className="flex items-center gap-2">
-                        Length (in) *
-                      </Label>
+                      <Label htmlFor="length">Length (in) *</Label>
                       <Input
                         id="length"
                         type="number"
@@ -380,9 +358,7 @@ export default function Home() {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="width" className="flex items-center gap-2">
-                        Width (in) *
-                      </Label>
+                      <Label htmlFor="width">Width (in) *</Label>
                       <Input
                         id="width"
                         type="number"
@@ -396,9 +372,7 @@ export default function Home() {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="height" className="flex items-center gap-2">
-                        Height (in) *
-                      </Label>
+                      <Label htmlFor="height">Height (in) *</Label>
                       <Input
                         id="height"
                         type="number"
@@ -424,36 +398,23 @@ export default function Home() {
                       placeholder="5.5"
                       className="font-mono max-w-xs"
                     />
-                    <p className="text-xs text-muted-foreground">Use decimals for ounces (e.g., 0.63 lb = 10 oz)</p>
                   </div>
                 </div>
 
-                {/* Additional Information */}
+                {/* Reference & Options */}
                 <div className="space-y-4">
                   <h3 className="text-sm font-semibold text-foreground uppercase tracking-wide">
-                    Additional Information
+                    Additional Info
                   </h3>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="reference1">Reference 1</Label>
-                      <Input
-                        id="reference1"
-                        value={formData.reference1}
-                        onChange={(e) => handleInputChange("reference1", e.target.value)}
-                        placeholder="Order #12345"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="reference2">Reference 2</Label>
-                      <Input
-                        id="reference2"
-                        value={formData.reference2}
-                        onChange={(e) => handleInputChange("reference2", e.target.value)}
-                        placeholder="PO #67890"
-                      />
-                    </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="reference">INV# / SO#</Label>
+                    <Input
+                      id="reference"
+                      value={formData.reference}
+                      onChange={(e) => handleInputChange("reference", e.target.value)}
+                      placeholder="INV-12345 or SO-67890"
+                    />
                   </div>
                   
                   <div className="flex items-center space-x-2">
@@ -489,8 +450,7 @@ export default function Home() {
                       onClick={() => {
                         setEditingId(null);
                         setFormData({
-                          company: "",
-                          attention: "",
+                          name: "",
                           street1: "",
                           street2: "",
                           city: "",
@@ -501,8 +461,7 @@ export default function Home() {
                           width: "",
                           height: "",
                           weight: "",
-                          reference1: "",
-                          reference2: "",
+                          reference: "",
                           residential: false,
                         });
                         toast.info("Editing cancelled");

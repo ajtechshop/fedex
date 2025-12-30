@@ -1,7 +1,6 @@
 export interface Shipment {
   id: string;
-  company: string;
-  attention: string;
+  name: string;
   street1: string;
   street2?: string;
   city: string;
@@ -12,14 +11,12 @@ export interface Shipment {
   width: number;
   height: number;
   weight: number;
-  reference1?: string;
-  reference2?: string;
+  reference: string; // INV# or SO#
   residential: boolean;
 }
 
 export interface ShipmentFormData {
-  company: string;
-  attention: string;
+  name: string;
   street1: string;
   street2: string;
   city: string;
@@ -30,7 +27,6 @@ export interface ShipmentFormData {
   width: string;
   height: string;
   weight: string;
-  reference1: string;
-  reference2: string;
+  reference: string;
   residential: boolean;
 }

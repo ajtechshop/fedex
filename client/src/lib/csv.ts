@@ -38,8 +38,8 @@ export function generateCSV(shipments: Shipment[]): string {
 
   // Create CSV rows
   const rows = shipments.map(shipment => [
-    escapeCSVField(shipment.company),
-    escapeCSVField(shipment.attention),
+    "", // company - left empty for internal use
+    escapeCSVField(shipment.name), // attention (recipient name)
     escapeCSVField(shipment.street1),
     escapeCSVField(shipment.street2 || ""),
     escapeCSVField(shipment.city),
@@ -52,8 +52,8 @@ export function generateCSV(shipments: Shipment[]): string {
     "FEDEX", // Default carrier
     "FEDEX_GROUND", // Default service
     escapeCSVField(shipment.phone),
-    escapeCSVField(shipment.reference1 || ""),
-    escapeCSVField(shipment.reference2 || ""),
+    escapeCSVField(shipment.reference), // reference1 - INV# or SO#
+    "", // reference2 - not used
     "", // invoice
     "", // options1
     "", // options2
