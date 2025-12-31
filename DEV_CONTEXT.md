@@ -2,6 +2,11 @@
 
 This project is a specialized utility for **AJ TECH** to generate FedEx-compatible shipment manifest CSVs.
 
+> [!IMPORTANT]
+> **To achieve the root domain URL `https://ajtechshop.github.io/`**:
+> You MUST rename this repository to **`ajtechshop.github.io`** in your GitHub settings. 
+> Currently, because it is named `fedex`, it is served by GitHub at `https://ajtechshop.github.io/fedex/`.
+
 ## Architecture Overview
 - **Vite & React (TypeScript)**: Modern, type-safe development environment.
 - **Tailwind CSS & Radix UI**: Enterprise-grade components and styling.
