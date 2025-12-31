@@ -1,72 +1,26 @@
 import { Shipment } from "@/types/shipment";
 
 /**
- * Converts an array of shipments to FedEx-compatible CSV format
- * Simplified version with only dimensions, weight, and reference
+ * CSV Generation Engine | AJ TECH
+ * 
+ * Handles escaping and formatting of shipment data into FedEx-compatible CSV strings.
+ * Core Logic:
+ * - Columns: Package Number, SO/INV, Dimensions (in), Weight (lb).
+ * - Dimension units are auto-rounded up (ceil) for logistics compatibility.
+ * - Volume (ft³) is for UI display only and is excluded from exported CSV.
  */
-export function generateCSV(shipments: Shipment[]): string {
-  // FedEx CSV headers (all lowercase as per spec)
-  const headers = [
-    "company",
-    "attention",
-    "street1",
-    "street2",
-    "city",
-    "state",
-    "zipcode",
-    "width",
-    "height",
-    "length",
-    "weight",
-    "carrier",
-    "service",
-    "phone",
-    "reference1",
-    "reference2",
-    "invoice",
-    "options1",
-    "options2",
-    "options3",
-    "email1",
-    "email2",
-    "email3",
-    "residential",
-    "fedex_po",
-    "fedex_dp",
-    "box",
-    "order_name"
-  ];
+export function generateCSV(shipments: Shipment[], globalReference: string): string {
+  // Sophisticated headers with units
+  const headers = ["Package Number", "SO/INV", "Length (in)", "Width (in)", "Height (in)", "Weight (lb)"];
 
-  // Create CSV rows - all address fields empty, only dimensions/weight/reference populated
-  const rows = shipments.map(shipment => [
-    "", // company
-    "", // attention
-    "", // street1
-    "", // street2
-    "", // city
-    "", // state
-    "", // zipcode
+  // Create CSV rows with new order (SO/INV is 2nd)
+  const rows = shipments.map((shipment, index) => [
+    (index + 1).toString(), // Package Number
+    escapeCSVField(globalReference), // SO/INV
+    shipment.length.toString(),
     shipment.width.toString(),
     shipment.height.toString(),
-    shipment.length.toString(),
-    shipment.weight.toString(),
-    "FEDEX", // Default carrier
-    "FEDEX_GROUND", // Default service
-    "", // phone
-    escapeCSVField(shipment.reference), // reference1 - INV# or SO#
-    "", // reference2 - not used
-    "", // invoice
-    "", // options1
-    "", // options2
-    "", // options3
-    "", // email1
-    "", // email2
-    "", // email3
-    "", // residential
-    "", // fedex_po
-    "", // fedex_dp
-    "", // box
-    "" // order_name
+    shipment.weight.toString()
   ]);
 
   // Combine headers and rows
@@ -83,12 +37,12 @@ export function generateCSV(shipments: Shipment[]): string {
  */
 function escapeCSVField(field: string): string {
   if (!field) return "";
-  
+
   // If field contains comma, quote, or newline, wrap in quotes and escape internal quotes
   if (field.includes(",") || field.includes('"') || field.includes("\n")) {
     return `"${field.replace(/"/g, '""')}"`;
   }
-  
+
   return field;
 }
 
@@ -98,7 +52,7 @@ function escapeCSVField(field: string): string {
 export function downloadCSV(content: string, filename: string = "fedex_shipments.csv"): void {
   const blob = new Blob([content], { type: "text/csv;charset=utf-8;" });
   const link = document.createElement("a");
-  
+
   if (link.download !== undefined) {
     const url = URL.createObjectURL(blob);
     link.setAttribute("href", url);

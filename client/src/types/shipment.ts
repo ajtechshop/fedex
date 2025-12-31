@@ -4,7 +4,6 @@ export interface Shipment {
   width: number;
   height: number;
   weight: number;
-  reference: string; // INV# or SO#
 }
 
 export interface ShipmentFormData {
@@ -12,5 +11,4 @@ export interface ShipmentFormData {
   width: string;
   height: string;
   weight: string;
-  reference: string;
 }
